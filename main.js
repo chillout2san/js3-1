@@ -1,8 +1,8 @@
 'use strict';
 // 各種DOMを取得
-const btnElm = document.querySelector('#btn');
-const textboxElm = document.querySelector('#textbox');
-const tbodyElm = document.querySelector('#tbody');
+const btn = document.querySelector('#btn');
+const textbox = document.querySelector('#textbox');
+const tbody = document.querySelector('#tbody');
 // タスクを格納する配列を定義
 const todos = [];
 
@@ -17,49 +17,67 @@ function createTask() {
     status: '作業中'
   };
   todos.push(todo);
+  counter++;
+  textbox.value = '';
 };
 
 // 状態ボタンを生成する関数
-function createStatusBtn(array) {
+function createStatusBtn(currentTodo) {
   const statusBtn = document.createElement('td');
   const btn = document.createElement('button');
-  btn.innerText = array.status;
+  btn.innerText = currentTodo.status;
   statusBtn.appendChild(btn);
-return statusBtn;
+  return statusBtn;
+};
+
+// タスクを削除する関数
+function deleteTask(event) {
+  const arrayId = event.path[2].innerText[0];
+  todos.splice(arrayId, 1);
+  tbody.innerHTML = '';
+  for(let i = 0; i < todos.length; i++){
+   todos[i].id = i;
+  }
+  todos.forEach(function(todo){
+    displayTodos(todo);
+  });
+  counter += -1;
 };
 
 // 削除ボタンを生成する関数
 function createDelBtn() {
-const delBtn = document.createElement('td');
-const btn = document.createElement('button');
-btn.innerText = "削除";
-delBtn.appendChild(btn);
-return delBtn;
+  const delBtn = document.createElement('td');
+  const btn = document.createElement('button');
+  btn.innerText = '削除';
+  delBtn.appendChild(btn);
+  btn.addEventListener('click', function(event){
+    deleteTask(event);
+  });
+  return delBtn;
 };
 
 // todoを表示する関数
-const displayTodos = function(array) {
+const displayTodos = function(todo) {
   const tr = document.createElement('tr');
   // インデックス
   const indexTd = document.createElement('td');
-  indexTd.innerText = array.id;
+  indexTd.innerText = todo.id;
   // 入力内容
   const taskTd = document.createElement('td');
-  taskTd.innerText = array.task;
+  taskTd.innerText = todo.task;
   // 配列をHTMLへ追加
   tr.appendChild(indexTd);
   tr.appendChild(taskTd);
-  tr.appendChild(createStatusBtn(array));
+  tr.appendChild(createStatusBtn(todo));
   tr.appendChild(createDelBtn());
-  tbodyElm.appendChild(tr);
+  tbody.appendChild(tr);
 };
 
 // 追加ボタンを押下した時の動作
-btnElm.addEventListener('click', function() {
+btn.addEventListener('click', function() {
+  tbody.innerHTML = '';
   createTask();
-  const array = todos.slice(-1)[0];
-  displayTodos(array);
-  counter++;
-  textboxElm.value = "";
+  todos.forEach(function(todo){
+    displayTodos(todo);
+  });
 }); 
-
