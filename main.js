@@ -1,7 +1,7 @@
 'use strict';
 // 各種DOMを取得
 const btn = document.querySelector('#btn');
-const textbox = document.querySelector('#textbox');
+const textBox = document.querySelector('#textbox');
 const tbody = document.querySelector('#tbody');
 // タスクを格納する配列を定義
 const todos = [];
@@ -13,12 +13,12 @@ let counter = 0;
 function createTask() {
   const todo = {
     id: counter,
-    task: textbox.value,
+    task: textBox.value,
     status: '作業中'
   };
   todos.push(todo);
   counter++;
-  textbox.value = '';
+  textBox.value = '';
 };
 
 // 状態ボタンを生成する関数
@@ -26,19 +26,31 @@ function createStatusBtn(currentTodo) {
   const statusBtn = document.createElement('td');
   const btn = document.createElement('button');
   btn.innerText = currentTodo.status;
+  btn.addEventListener('click', (event) => {
+    const arrayId = event.path[2].childNodes[0].innerText;
+    if(todos[arrayId].status === '作業中') {
+      todos[arrayId].status = '完了';
+    }else{
+      todos[arrayId].status = '作業中';
+    };
+    tbody.innerHTML = '';
+    todos.forEach((todo) => {
+      displayTodos(todo);
+    });
+  })
   statusBtn.appendChild(btn);
   return statusBtn;
 };
 
 // タスクを削除する関数
 function deleteTask(event) {
-  const arrayId = event.path[2].innerText[0];
+  const arrayId = event.path[2].childNodes[0].innerText;
   todos.splice(arrayId, 1);
   tbody.innerHTML = '';
   for(let i = 0; i < todos.length; i++){
    todos[i].id = i;
   }
-  todos.forEach(function(todo){
+  todos.forEach((todo) => {
     displayTodos(todo);
   });
   counter += -1;
@@ -50,14 +62,14 @@ function createDelBtn() {
   const btn = document.createElement('button');
   btn.innerText = '削除';
   delBtn.appendChild(btn);
-  btn.addEventListener('click', function(event){
+  btn.addEventListener('click', (event) => {
     deleteTask(event);
   });
   return delBtn;
 };
 
 // todoを表示する関数
-const displayTodos = function(todo) {
+const displayTodos = (todo) => {
   const tr = document.createElement('tr');
   // インデックス
   const indexTd = document.createElement('td');
@@ -74,7 +86,7 @@ const displayTodos = function(todo) {
 };
 
 // 追加ボタンを押下した時の動作
-btn.addEventListener('click', function() {
+btn.addEventListener('click', () => {
   tbody.innerHTML = '';
   createTask();
   todos.forEach(function(todo){
