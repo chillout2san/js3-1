@@ -3,6 +3,40 @@
 const btn = document.querySelector('#btn');
 const textBox = document.querySelector('#textbox');
 const tbody = document.querySelector('#tbody');
+const all = document.querySelector('#all');
+const inprogress = document.querySelector('#inprogress');
+const done = document.querySelector('#done');
+
+// 「すべて」ラジオボタンを押した時の動作
+all.addEventListener('click', () => {
+  tbody.innerHTML = '';
+  todos.forEach((todo) => {
+    displayTodos(todo);
+  });
+})
+
+// 「作業中」ラジオボタンを押した時の動作
+inprogress.addEventListener('click', () => {
+  tbody.innerHTML = '';
+  const inprogressTodos = todos.filter((currentStatus) => {
+    return currentStatus.status === '作業中';
+  });
+  inprogressTodos.forEach((todo) => {
+    displayTodos(todo);
+  });
+});
+
+// 「完了」ラジオボタンを押した時の動作
+done.addEventListener('click', () => {
+  tbody.innerHTML = '';
+  const doneTodos = todos.filter((currentStatus) => {
+    return currentStatus.status === '完了';
+  });
+  doneTodos.forEach((todo) => {
+    displayTodos(todo);
+  });
+});
+
 // タスクを格納する配列を定義
 const todos = [];
 
@@ -34,9 +68,25 @@ function createStatusBtn(currentTodo) {
       todos[arrayId].status = '作業中';
     };
     tbody.innerHTML = '';
-    todos.forEach((todo) => {
-      displayTodos(todo);
+    const inprogressTodos = todos.filter((currentStatus) => {
+      return currentStatus.status === '作業中';
     });
+    const doneTodos = todos.filter((currentStatus) => {
+      return currentStatus.status === '完了';
+    });
+    if(all.checked) {
+      todos.forEach((todo) => {
+        displayTodos(todo);
+      });
+    }else if(inprogress.checked) {
+      inprogressTodos.forEach((todo) => {
+        displayTodos(todo);
+      });
+    }else if(done.checked) {
+      doneTodos.forEach((todo) => {
+        displayTodos(todo);
+      });
+    };
   })
   statusBtn.appendChild(btn);
   return statusBtn;
@@ -49,10 +99,26 @@ function deleteTask(event) {
   tbody.innerHTML = '';
   for(let i = 0; i < todos.length; i++){
    todos[i].id = i;
-  }
-  todos.forEach((todo) => {
-    displayTodos(todo);
+  };
+  const inprogressTodos = todos.filter((currentStatus) => {
+    return currentStatus.status === '作業中';
   });
+  const doneTodos = todos.filter((currentStatus) => {
+    return currentStatus.status === '完了';
+  });
+  if(all.checked) {
+    todos.forEach((todo) => {
+      displayTodos(todo);
+    });
+  }else if(inprogress.checked) {
+    inprogressTodos.forEach((todo) => {
+      displayTodos(todo);
+    });
+  }else if(done.checked) {
+    doneTodos.forEach((todo) => {
+      displayTodos(todo);
+    });
+  };
   counter += -1;
 };
 
@@ -89,7 +155,23 @@ const displayTodos = (todo) => {
 btn.addEventListener('click', () => {
   tbody.innerHTML = '';
   createTask();
-  todos.forEach(function(todo){
-    displayTodos(todo);
+  const inprogressTodos = todos.filter((currentStatus) => {
+    return currentStatus.status === '作業中';
   });
-}); 
+  const doneTodos = todos.filter((currentStatus) => {
+    return currentStatus.status === '完了';
+  });
+  if(all.checked) {
+    todos.forEach((todo) => {
+      displayTodos(todo);
+    });
+  }else if(inprogress.checked) {
+    inprogressTodos.forEach((todo) => {
+      displayTodos(todo);
+    });
+  }else if(done.checked) {
+    doneTodos.forEach((todo) => {
+      displayTodos(todo);
+    });
+  };
+});
